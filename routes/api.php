@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AvailabilityController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +16,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+
+Route::prefix('auth')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
+    Route::post('switch-role', [AuthController::class, 'switchRole'])->middleware('auth:api');
+});
+
+Route::prefix('availability')->middleware('auth:api')->group(function () {
+    Route::post('set', [AvailabilityController::class, 'setAvailability']);
+    Route::get('get/{user_id}', [AvailabilityController::class, 'getAvailability']);
 });

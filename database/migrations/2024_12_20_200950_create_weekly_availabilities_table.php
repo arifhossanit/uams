@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('weekly_availabilities', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->enum('role', ['seller', 'buyer'])->default('buyer');
-            $table->string('timezone');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('day_of_week'); // e.g., Monday
+            $table->time('start_time');
+            $table->time('end_time');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('weekly_availabilities');
     }
 };
